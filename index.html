@@ -18,15 +18,15 @@
     <button onclick="uploadPhoto()">Upload & Update</button>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxj-wUrhlzXQksSbQ_B8RuqS6QB1JEyPCduMUiWbBDzrKrbkz33sx6p62116FvDdG4iCw/exec";
+        const API_URL = "19f4uWUwJSEa4LBuT7TiXAjGCYLdfngpfQ0vUvXu0IcA";  // Replace with your actual Google Apps Script URL
 
         function searchStudent() {
-            let index = document.getElementById("University Index Number").value;
+            let index = document.getElementById("indexNumber").value;
             fetch(API_URL + "?index=" + index)
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById("Name").innerText = "Name: " + data.name;
-                    document.getElementById("Photo URL").src = data.photo || "https://via.placeholder.com/150";
+                    document.getElementById("studentName").innerText = "Name: " + data.name;
+                    document.getElementById("studentPhoto").src = data.photo || "https://via.placeholder.com/150";
                 })
                 .catch(error => console.error("Error:", error));
         }
@@ -42,9 +42,9 @@
             }
 
             let formData = new FormData();
-            formData.append("file", file);
+            formData.append("image", file);
 
-            fetch("https://api.imgbb.com/1/upload?key=20d24876657f2e1261cc316d859469cc", {
+            fetch("https://api.imgbb.com/1/upload?key=97255539606864a4ef6a1e77f09b0f36", {  // Replace with your actual ImgBB API Key
                 method: "POST",
                 body: formData
             })
@@ -71,3 +71,4 @@
     </script>
 </body>
 </html>
+
