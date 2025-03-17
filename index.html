@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Photo Update</title>
+</head>
+<body>
+    <h2>Search Student</h2>
+    <input type="text" id="indexNumber" placeholder="Enter Index Number">
+    <button onclick="searchStudent()">Search</button>
+
+    <h2>Student Details</h2>
+    <p id="studentName"></p>
+    <img id="studentPhoto" src="" alt="No photo" width="150"><br>
+
+    <input type="file" id="photoUpload">
+    <button onclick="uploadPhoto()">Upload & Update</button>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbxj-wUrhlzXQksSbQ_B8RuqS6QB1JEyPCduMUiWbBDzrKrbkz33sx6p62116FvDdG4iCw/exec";
+
+        function searchStudent() {
+            let index = document.getElementById("University Index Number").value;
+            fetch(API_URL + "?index=" + index)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("Name").innerText = "Name: " + data.name;
+                    document.getElementById("Photo URL").src = data.photo || "https://via.placeholder.com/150";
+                })
+                .catch(error => console.error("Error:", error));
+        }
+
+        function uploadPhoto() {
+            let fileInput = document.getElementById("photoUpload");
+            let file = fileInput.files[0];
+            let index = document.getElementById("indexNumber").value;
+
+            if (!file || !index) {
+                alert("Enter Index Number and select a file!");
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append("file", file);
+
+            fetch("https://api.imgbb.com/1/upload?key=20d24876657f2e1261cc316d859469cc", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                let photoUrl = data.data.url;
+                fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: `index=${index}&photo=${encodeURIComponent(photoUrl)}`
+                })
+                .then(response => response.text())
+                .then(result => {
+                    if (result === "Success") {
+                        document.getElementById("studentPhoto").src = photoUrl;
+                        alert("Photo Updated Successfully!");
+                    } else {
+                        alert("Error updating photo");
+                    }
+                });
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+</html>
